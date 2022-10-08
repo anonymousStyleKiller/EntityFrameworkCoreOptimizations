@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using EFCoreOptimizations;
+using Microsoft.EntityFrameworkCore;
 
 
 TooManyQueries();
@@ -7,22 +8,19 @@ TooManyQueries();
 static void TooManyQueries()
 {
     var stopWatch = Stopwatch.StartNew();
-    using (var db = new CatsDbContext())
+    using var db = new CatsDbContext();
+    var owners = db.Owners
+        .Where(o => o.Name.Contains('1'))
+        .Include(o=>o.Cats)
+        .ToList();
+        
+    foreach (var owner in owners)
     {
-        var owners = db.Owners
-            .Where(o => o.Name.Contains("1"))
+        var cats = db.Cats
+            .Where(c =>c.Name.Contains('1'))
             .ToList();
-        foreach (var owner in owners)
-        {
-            db.Entry(owner)
-                .Collection(o=>o.Cats)
-                .Load();
-            
-            var cats = db.Cats
-                .Where(o => o.Name.Contains("1"))
-                .ToList();
-        }
-
-        Console.WriteLine(stopWatch.Elapsed);
     }
+
+    Console.WriteLine(stopWatch.Elapsed);
+    Console.ReadLine();
 }
