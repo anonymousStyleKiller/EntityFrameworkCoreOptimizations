@@ -9,7 +9,8 @@ public class CatsDbContext : DbContext
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=.;Database=CatsDemoDb;Integrated Security=True;");
+        optionsBuilder
+            .UseSqlServer("Server=.;Database=CatsDemoDb;Integrated Security=True;");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

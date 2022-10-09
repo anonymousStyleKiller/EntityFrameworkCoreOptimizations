@@ -1,26 +1,31 @@
 ﻿using System.Diagnostics;
+using System.Linq.Expressions;
 using EFCoreOptimizations;
-using Microsoft.EntityFrameworkCore;
 
 
-TooManyQueries();
+GetData();
 
-static void TooManyQueries()
+static void GetData()
 {
     var stopWatch = Stopwatch.StartNew();
     using var db = new CatsDbContext();
-    var owners = db.Owners
+    
+    Expression<Func<Cat, bool>> predicate = (Cat) => false;
+    
+    var cats = db.Cats
+        .ToList()
         .Where(o => o.Name.Contains('1'))
-        .Include(o=>o.Cats)
-        .ToList();
-        
-    foreach (var owner in owners)
-    {
-        var cats = db.Cats
-            .Where(c =>c.Name.Contains('1'))
-            .ToList();
-    }
+        .Select(c=>new CatResult
+        {
+           Name = c.Name,
+           Age  = c.Age
+        });
 
+    foreach (var cat in cats)
+    {
+        Console.WriteLine(cat.Name);
+    }
+    
     Console.WriteLine(stopWatch.Elapsed);
     Console.ReadLine();
 }
