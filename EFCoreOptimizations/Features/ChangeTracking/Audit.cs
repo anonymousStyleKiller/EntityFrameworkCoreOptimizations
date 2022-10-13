@@ -1,12 +1,16 @@
-﻿namespace EFCoreOptimizations.Features.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore;
 
-public class Audit
+namespace EFCoreOptimizations.Features.ChangeTracking;
+
+public static class Audit
 {
-    public void ChangeTracking()
+    public static void NoTracking()
     {
         using var db = new CatsDbContext();
-        var cat = db.Cats.FirstOrDefault(i=>i.Age == 2022);
+        var cat = db.Cats.AsNoTracking().
+            FirstOrDefault();
         cat.Name = "New Cat";
+        Console.WriteLine($"{db.ChangeTracker.Entries().Count()}");
         db.SaveChanges();
     }
 }

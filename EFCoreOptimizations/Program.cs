@@ -1,5 +1,5 @@
-﻿using EFCoreOptimizations.Features.Get;
+﻿using EFCoreOptimizations.Features.ChangeTracking;
+using EFCoreOptimizations.Features.Get;
 
-GetCats.GetData();
-GetCats.GetData();
+Audit.NoTracking();
 Console.ReadLine();
